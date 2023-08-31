@@ -33,17 +33,16 @@ void main()
 	vec3 viewVec = normalize(eye - Position);
 	vec3 halfVec = normalize(viewVec + lightDir);
 
-	//float diffuseAmt = max(0.0,dot(Normal,lightDir));
+	float diffuseAmt = max(0.0,dot(Normal,lightDir));
 	float specAmt = max(0.0,pow(dot(Normal,halfVec),material.a));
 	
 	vec3 color;
 
 	if(skyboxToggle){
-		color = light.intensity*(texture(skybox, reflectDir).xyz*material.diffuse + specAmt*material.specular);
+		color = light.intensity*(texture(skybox, reflectDir).xyz + material.diffuse*diffuseAmt + specAmt*material.specular);
 	}else{
-		color = light.intensity*(material.diffuse + specAmt*material.specular);
+		color = light.intensity*(material.diffuse*diffuseAmt + specAmt*material.specular);
 	}
-	//vec3 color = material.diffuse*diffuseAmt;
 	outColor = vec4(color,1.0);
 
 }

@@ -110,7 +110,6 @@ vec3 Shade(Hit hit){
 	vec3 halfVec = normalize(viewVec + lightDir);
 
 	float diffuseAmt = max(0.0,dot(hit.normal,lightDir));
-	float specAmt = max(0.0,pow(dot(hit.normal,halfVec),hit.mat.a));
 
 	Ray shadowRay = Ray(hit.point + 0.01*lightDir,lightDir);
 
@@ -118,7 +117,7 @@ vec3 Shade(Hit hit){
 
 	//Not in shadow
 	if(!getClosestHit(shadowRay,temp)){
-		return light.intensity*(hit.mat.diffuse*diffuseAmt + specAmt*hit.mat.specular);
+		return light.intensity*hit.mat.diffuse*diffuseAmt;
 	}else{ //In shadow
 		return vec3(0.0);
 	}
@@ -145,12 +144,13 @@ vec3 trace(Ray eyeRay){
 			//Shoot into scene
 			if(getClosestHit(bounceRay,hit)){
 				spec = hit.mat.specular;
-				float power = i + 1;
+				float power = i;
 				color += Shade(hit) * vec3(pow(spec.x,power),pow(spec.y,power),pow(spec.z,power));
 			}else{
-				
+				float power = i;
+
 				if(skyboxToggle){
-					color += texture(skybox, bounceRay.dir).rgb * .1;
+					color += texture(skybox, bounceRay.dir).rgb * vec3(pow(spec.x,power),pow(spec.y,power),pow(spec.z,power));
 				}
 			}
 		}

@@ -71,6 +71,7 @@ void Viewer::init()
 	mSphereShader.setUniformMat4("proj", mProjMatrix.getRawData());
 	mSphereShader.setUniformInt("skybox", 0);
 	mSphereShader.setUniformFloat3("eye", mCamera->getEye());
+
 	
 	mSkybox.init(faces, *mCamera, mProjMatrix);
 
@@ -206,15 +207,26 @@ void Viewer::generateSpheres()
 		math::Vec3{0.0, -floor_radius, 0.0},
 		floor_radius,
 		Material{
-			math::Color3{0.5,0.5,0.5},
+			math::Color3{1.0,1.0,1.0}*.1,
 			math::Color3{1.0,1.0,1.0}*.1,
 			16.0f
 		}
 	};
 
 	mSpheres.push_back(floorSphere);
+	mSpheres.push_back(
+		Sphere{
+				math::Vec3{0.0, 1.0,0.0},
+				1.0,
+				Material{
+					math::Color3{1.0f,1.0f,1.0f}*.1,
+					math::Color3{1.0f,1.0f,1.0f}*.1,
+					16.0f
+				}
+		}
+	);
 
-	for (int i = 1; i < MAX_NUM_SPHERES;i++) {
+	for (int i = 2; i < MAX_NUM_SPHERES;i++) {
 		Sphere sphere{};
 		do {
 			float radius = math::randFloatRange(0.1, 0.7);
@@ -222,7 +234,7 @@ void Viewer::generateSpheres()
 				math::Vec3{ math::randFloatRange(-extents,extents), radius, math::randFloatRange(-extents,extents)},
 				radius,
 				Material{
-					(math::Color3::rand() + math::Color3{1.0f,1.0f,1.0f})*2.0f/3.0f,
+					(math::Color3::rand() + math::Color3{1.0f,1.0f,1.0f})*2.0f/5.0f,
 					math::Color3{1.0f,1.0f,1.0f}*.1,
 					16.0f
 				}
