@@ -5,6 +5,8 @@ namespace core {
 
 	class App {
 	public:
+		App();
+		virtual ~App();
 		virtual void init();
 		virtual void update();
 		virtual void render();
@@ -12,7 +14,8 @@ namespace core {
 		void setDimensions(int width, int height);
 
 	protected:
-		int mWindowWidth, mWindowHeight;
+		int mWindowWidth{};
+		int mWindowHeight{};
 
 	};
 

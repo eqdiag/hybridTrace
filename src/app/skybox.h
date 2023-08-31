@@ -55,7 +55,7 @@ public:
 	Skybox();
 	void init(const std::vector<std::string> skyboxFaces, const core::Camera& camera, const math::Mat4& projMatrix);
 	~Skybox();
-	void Render(const core::Camera& camera);
+	void Render(const core::Camera& camera,bool skyToggle);
 private:
 	core::Shader mSkyboxShader{};
 	GLuint mVAO, mVBO, mTexId;

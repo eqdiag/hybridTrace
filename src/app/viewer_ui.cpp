@@ -45,9 +45,25 @@ void ViewerUi::update()
      
 
     
-        ImGui::Checkbox("Rasterize Mode", &mViewer.mRasterizeMode);
-        ImGui::Checkbox("Ray Trace Mode", &mViewer.mRayTraceMode);
-        ImGui::Checkbox("Hybrid Mode: Rasterize + Raytrace ", &mViewer.mHybridMode);
+        if (ImGui::Checkbox("Rasterize Mode", &mViewer.mRasterizeMode)) {
+            if (mViewer.mRasterizeMode) {
+                mViewer.mRayTraceMode = false;
+                mViewer.mHybridMode = false;
+            }
+        }
+        if (ImGui::Checkbox("Ray Trace Mode", &mViewer.mRayTraceMode)) {
+            if (mViewer.mRayTraceMode) {
+                mViewer.mRasterizeMode = false;
+                mViewer.mHybridMode = false;
+
+            }
+        }
+        if (ImGui::Checkbox("Hybrid Mode: Rasterize + Raytrace ", &mViewer.mHybridMode)) {
+            if (mViewer.mHybridMode) {
+                mViewer.mRasterizeMode = false;
+                mViewer.mRayTraceMode = false;
+            }
+        }
 
   
 
@@ -55,10 +71,18 @@ void ViewerUi::update()
         if (ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen))
         {
 
+            ImGui::Checkbox("Environment Map", &mViewer.mEnvMapToggle);
+
             if (mViewer.mRayTraceMode || mViewer.mHybridMode) {
-                ImGui::SliderInt("Num Bounces", &mViewer.mNumRayBounces, 1, 10);
+                if (ImGui::SliderInt("Num Bounces", &mViewer.mNumRayBounces, 0, 10)) {
+                    mViewer.mRayTraceShader.use();
+                    mViewer.mRayTraceShader.setUniformInt("numBounces", mViewer.mNumRayBounces);
+                }
             }
-            ImGui::SliderInt("Num Spheres", &mViewer.mNumSpheresDisplayed, 1,mViewer.MAX_NUM_SPHERES);
+            if (ImGui::SliderInt("Num Spheres", &mViewer.mNumSpheresDisplayed, 1, mViewer.MAX_NUM_SPHERES)) {
+                mViewer.mRayTraceShader.use();
+                mViewer.mRayTraceShader.setUniformInt("numSpheresDisplayed", mViewer.mNumSpheresDisplayed);
+            }
 
         }
 

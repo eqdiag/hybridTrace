@@ -80,12 +80,13 @@ Skybox::~Skybox()
 	glDeleteTextures(1, &mTexId);
 }
 
-void Skybox::Render(const core::Camera& camera)
+void Skybox::Render(const core::Camera& camera, bool skyToggle)
 {
 
 	mSkyboxShader.use();
 	auto viewMatrix = camera.getViewMatrix();
 	mSkyboxShader.setUniformMat4("view", viewMatrix.removeTranslation().getRawData());
+	mSkyboxShader.setUniformBool("skyToggle", skyToggle);
 
 	glBindVertexArray(mVAO);
 	glActiveTexture(GL_TEXTURE0);

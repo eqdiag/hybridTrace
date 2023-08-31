@@ -170,4 +170,17 @@ void core::ArcCamera::recomputeFrame() {
     mRight = mForward.cross(mUp).normalize();
 }
 
+math::Vec3 core::Camera::getUp() const
+{
+    return mUp;
+}
 
+math::Vec3 core::Camera::getRight() const
+{
+    return mRight;
+}
+
+math::Vec3 core::Camera::getBack()
+{
+    return mForward*-1.0f;
+}

@@ -1,5 +1,15 @@
 #include "app.h"
 
+core::App::App():
+	mWindowWidth{},
+	mWindowHeight{}
+{
+}
+
+core::App::~App()
+{
+}
+
 void core::App::init() {
 
 }

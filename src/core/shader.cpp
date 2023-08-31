@@ -95,6 +95,11 @@ void core::Shader::enableVertexAttributeArray(const char* str)
     glEnableVertexAttribArray(getAttributeLocation(str));
 }
 
+void core::Shader::setUniformBool(const char* str, bool value)
+{
+    glUniform1i(getUniformLocation(str), value);
+}
+
 void core::Shader::setUniformInt(const char* str, int value)
 {
     glUniform1i(getUniformLocation(str), value);

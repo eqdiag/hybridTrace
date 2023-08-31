@@ -25,6 +25,7 @@ namespace core {
 		GLint getUniformLocation(const char* str);
 
 		void enableVertexAttributeArray(const char* str);
+		void setUniformBool(const char* str, bool value);
 		void setUniformInt(const char* str, int value);
 		void setUniformFloat(const char* str, float value);
 		void setUniformFloat2(const char* str, float valueX, float valueY);

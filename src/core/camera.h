@@ -30,6 +30,10 @@ namespace core {
 
         virtual math::Mat4 getViewMatrix() const = 0;
         virtual math::Vec3 getEye() const = 0;
+        math::Vec3 getUp() const;
+        math::Vec3 getRight() const;
+        math::Vec3 getBack();
+
 
         virtual void recomputeFrame() = 0;
 
