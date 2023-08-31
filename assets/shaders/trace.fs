@@ -141,20 +141,23 @@ vec3 trace(Ray eyeRay){
 			vec3 reflectDir = reflect(hit.incoming,hit.normal);
 			bounceRay = Ray(hit.point + 0.05*reflectDir,reflectDir);
 
+			spec = hit.mat.specular;
 			//Shoot into scene
 			if(getClosestHit(bounceRay,hit)){
-				vec3 spec = hit.mat.specular;
-				color += Shade(hit) * vec3(pow(spec.x,i),pow(spec.y,i),pow(spec.z,i));
+				spec = hit.mat.specular;
+				float power = i + 1;
+				color += Shade(hit) * vec3(pow(spec.x,power),pow(spec.y,power),pow(spec.z,power));
 			}else{
+				
 				if(skyboxToggle){
-					color += texture(skybox, bounceRay.dir).rgb * pow(.1,i)*.3;
+					color += texture(skybox, bounceRay.dir).rgb * .1;
 				}
 			}
 		}
 		return color;
 	}else{
 		if(skyboxToggle){
-			texture(skybox, eyeRay.dir).rgb;
+			return texture(skybox, eyeRay.dir).rgb;
 		}else{
 			return vec3(0);
 		}

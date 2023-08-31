@@ -207,7 +207,7 @@ void Viewer::generateSpheres()
 		floor_radius,
 		Material{
 			math::Color3{0.5,0.5,0.5},
-			math::Color3{0.4,0.1,0.1},
+			math::Color3{1.0,1.0,1.0}*.1,
 			16.0f
 		}
 	};
