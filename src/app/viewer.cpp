@@ -20,7 +20,8 @@ Viewer::Viewer() :
 	mRayTraceMode{false},
 	mHybridMode{false},
 	mSkybox{},
-	mLight{}
+	mLight{},
+	mTimer{50}
 {
 
 }
@@ -36,6 +37,8 @@ void Viewer::init()
 	//Create graphics assets
 	mSphereShader.init(SHADER_DIR, "sphere.vs", "sphere.fs");
 	mRayTraceShader.init(SHADER_DIR, "trace.vs", "trace.fs");
+	mHybridShader.init(SHADER_DIR, "hybrid.vs","hybrid.fs");
+
 
 	mLight = Light{
 		math::Vec3{0,1000,0},
@@ -71,6 +74,8 @@ void Viewer::init()
 	mSphereShader.setUniformMat4("proj", mProjMatrix.getRawData());
 	mSphereShader.setUniformInt("skybox", 0);
 	mSphereShader.setUniformFloat3("eye", mCamera->getEye());
+	mSphereShader.setUniformFloat3("light.position", mLight.position);
+	mSphereShader.setUniformFloat3("light.intensity", mLight.intensity);
 
 	
 	mSkybox.init(faces, *mCamera, mProjMatrix);
@@ -117,9 +122,29 @@ void Viewer::render()
 	else if (mHybridMode) {
 		hybridRender();
 	}
+
+	mTimer.tick();
 }
 
+void Viewer::rebuildSpheres()
+{
+	mSpheres.clear();
+	generateSpheres();
 
+	mRayTraceShader.use();
+
+	for (int i = 0; i < MAX_NUM_SPHERES; i++) {
+		std::string uniform{};
+		uniform += "spheres[";
+		uniform += std::to_string(i);
+		uniform += "].";
+		mRayTraceShader.setUniformFloat3((uniform + "center").c_str(), mSpheres[i].center);
+		mRayTraceShader.setUniformFloat((uniform + "radius").c_str(), mSpheres[i].radius);
+		mRayTraceShader.setUniformFloat3((uniform + "material.diffuse").c_str(), mSpheres[i].mat.diffuse);
+		mRayTraceShader.setUniformFloat3((uniform + "material.specular").c_str(), mSpheres[i].mat.specular);
+		mRayTraceShader.setUniformFloat((uniform + "material.a").c_str(), mSpheres[i].mat.specularExponent);
+	}
+}
 
 void Viewer::rasterizerRender()
 {
@@ -139,9 +164,6 @@ void Viewer::rasterizerRender()
 		mSphereShader.setUniformFloat3("material.diffuse", sphere.mat.diffuse);
 		mSphereShader.setUniformFloat3("material.specular", sphere.mat.specular);
 		mSphereShader.setUniformFloat("material.a", sphere.mat.specularExponent);
-
-		mSphereShader.setUniformFloat3("light.position", mLight.position);
-		mSphereShader.setUniformFloat3("light.intensity", mLight.intensity);
 
 		mMesh->Render();
 
@@ -196,8 +218,8 @@ bool Viewer::trySphereAdd(const math::Vec4& sphere)
 
 void Viewer::generateSpheres()
 {
-	//Use the same seed each time
-	std::srand(2);
+	//Can use the same random seed each time if you want
+	//std::srand(2);
 	float extents = 4;
 	float floor_radius = 1600.0;
 
@@ -243,5 +265,7 @@ void Viewer::generateSpheres()
 		mSpheres.push_back(sphere);
 	}
 }
+
+
 
 

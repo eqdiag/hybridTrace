@@ -8,6 +8,7 @@
 #include "core/mesh.h"
 #include "core/asset_loader.h"
 #include "core/camera.h"
+#include "core/timer.h"
 #include "math/matrix.h"
 
 #include "skybox.h"
@@ -23,6 +24,7 @@ public:
 	void render() override;
 
 
+	void rebuildSpheres();
 
 
 	//State variables
@@ -41,6 +43,7 @@ public:
 
 	const int MAX_NUM_SPHERES = 100;
 
+	core::Timer mTimer;
 
 
 	//Shader uniforms
@@ -64,7 +67,9 @@ private:
 	bool trySphereAdd(const math::Vec4& sphere);
 	void generateSpheres();
 
+
 	core::Shader mSphereShader{};
+	core::Shader mHybridShader{};
 	Skybox mSkybox{};
 
 	GLuint mRayTraceVAO;
@@ -72,7 +77,6 @@ private:
 	//Random sphere locations (position,radius)
 	Light mLight;
 	std::vector<Sphere> mSpheres;
-
 
 	core::AssetLoader mLoader{};
 

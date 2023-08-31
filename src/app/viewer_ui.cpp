@@ -25,8 +25,11 @@ void ViewerUi::update()
             if (ImGui::MenuItem("Rendering Options Menu")) {
                 mViewer.mViewerOpen = !(mViewer.mViewerOpen);
             }
+
             ImGui::EndMenu();
         }
+        ImGui::Text("FPS: %f\n", mViewer.mTimer.getFps());
+
 
         /*if (mViewer.mNormalShadingMode) {
             ImGui::Text("SHADING MODE (M): Normal shading\n");
@@ -70,6 +73,10 @@ void ViewerUi::update()
 
         if (ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen))
         {
+
+            if (ImGui::Button("Generate New Spheres")) {
+                mViewer.rebuildSpheres();
+            }
 
             ImGui::Checkbox("Environment Map", &mViewer.mEnvMapToggle);
 
