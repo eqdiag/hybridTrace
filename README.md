@@ -27,10 +27,12 @@ make
   *  `Hybrid Mode`  Reflective spheres are triangle meshes. Primary visibility is handled via rasterization, lighting is handled via ray tracing.
 
 
-## Screenshots
-# Rasterization Mode
+# Screenshots
+## Rasterization Mode
 ![Rasterization Mode](/screenshots/raster_mode.PNG "Rasterization Mode Example")
+## Ray Trace Mode
 ![Ray Trace Mode](/screenshots/trace_mode.PNG "Ray Trace Mode Example")
+## Hybrid Mode
 ![Hybrid Mode](screenshots/hybrid_mode.PNG "Hybrid Mode Example")
 
 ## Keyboard Controls
