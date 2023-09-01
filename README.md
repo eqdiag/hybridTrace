@@ -14,9 +14,10 @@ All dependencies are self-contained in this project using git's submodule system
 
 ```
 git clone https://github.com/eqdiag/hybridTrace
-mkdir -p out/build
-cd out/build
-cmake ../..
+cd hybridTrace
+mkdir build
+cd build
+cmake ..
 make
 ```
 
