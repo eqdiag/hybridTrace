@@ -1,6 +1,6 @@
 # hybridTrace
 
-Application for comparing classical triangle rasterization and ray tracing.
+Real-time GPU based application for comparing traditional triangle rasterization and ray tracing.
 This does NOT use a physically-based lighting model.
 Some of the main visual effects ray tracing provides that rasterization doesn't (out of the box) in this case are: shadows and multi-bounce reflections.
 
