@@ -77,6 +77,15 @@ void Viewer::init()
 	mSphereShader.setUniformFloat3("light.position", mLight.position);
 	mSphereShader.setUniformFloat3("light.intensity", mLight.intensity);
 
+
+	mHybridShader.use();
+	mHybridShader.setUniformMat4("model", mModelMatrix.getRawData());
+	mHybridShader.setUniformMat4("view", mViewMatrix.getRawData());
+	mHybridShader.setUniformMat4("proj", mProjMatrix.getRawData());
+	mHybridShader.setUniformInt("skybox", 0);
+	mHybridShader.setUniformFloat3("eye", mCamera->getEye());
+	mHybridShader.setUniformFloat3("light.position", mLight.position);
+	mHybridShader.setUniformFloat3("light.intensity", mLight.intensity);
 	
 	mSkybox.init(faces, *mCamera, mProjMatrix);
 
@@ -99,6 +108,18 @@ void Viewer::init()
 		mRayTraceShader.setUniformFloat((uniform + "material.a").c_str(), mSpheres[i].mat.specularExponent);
 	}
 
+	mHybridShader.use();
+	for (int i = 0; i < MAX_NUM_SPHERES; i++) {
+		std::string uniform{};
+		uniform += "spheres[";
+		uniform += std::to_string(i);
+		uniform += "].";
+		mHybridShader.setUniformFloat3((uniform + "center").c_str(), mSpheres[i].center);
+		mHybridShader.setUniformFloat((uniform + "radius").c_str(), mSpheres[i].radius);
+		mHybridShader.setUniformFloat3((uniform + "material.diffuse").c_str(), mSpheres[i].mat.diffuse);
+		mHybridShader.setUniformFloat3((uniform + "material.specular").c_str(), mSpheres[i].mat.specular);
+		mHybridShader.setUniformFloat((uniform + "material.a").c_str(), mSpheres[i].mat.specularExponent);
+	}
 	
 
 	glClearColor(0.22f, 0.22f, 0.22f, 1.0f);
@@ -143,6 +164,19 @@ void Viewer::rebuildSpheres()
 		mRayTraceShader.setUniformFloat3((uniform + "material.diffuse").c_str(), mSpheres[i].mat.diffuse);
 		mRayTraceShader.setUniformFloat3((uniform + "material.specular").c_str(), mSpheres[i].mat.specular);
 		mRayTraceShader.setUniformFloat((uniform + "material.a").c_str(), mSpheres[i].mat.specularExponent);
+	}
+
+	mHybridShader.use();
+	for (int i = 0; i < MAX_NUM_SPHERES; i++) {
+		std::string uniform{};
+		uniform += "spheres[";
+		uniform += std::to_string(i);
+		uniform += "].";
+		mHybridShader.setUniformFloat3((uniform + "center").c_str(), mSpheres[i].center);
+		mHybridShader.setUniformFloat((uniform + "radius").c_str(), mSpheres[i].radius);
+		mHybridShader.setUniformFloat3((uniform + "material.diffuse").c_str(), mSpheres[i].mat.diffuse);
+		mHybridShader.setUniformFloat3((uniform + "material.specular").c_str(), mSpheres[i].mat.specular);
+		mHybridShader.setUniformFloat((uniform + "material.a").c_str(), mSpheres[i].mat.specularExponent);
 	}
 }
 
@@ -202,6 +236,29 @@ void Viewer::hybridRender()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	mHybridShader.use();
+	mHybridShader.setUniformMat4("view", mCamera->getViewMatrix().getRawData());
+	mHybridShader.setUniformFloat3("eye", mCamera->getEye());
+	mHybridShader.setUniformBool("skyboxToggle", mEnvMapToggle);
+
+	for (int i = 0; i < mNumSpheresDisplayed; i++) {
+		auto sphere = mSpheres.at(i);
+		mModelMatrix = math::Mat4::fromUniformScale(sphere.radius);
+		mModelMatrix = math::Mat4::fromTranslation(sphere.center) * mModelMatrix;
+		mHybridShader.setUniformMat4("model", mModelMatrix.getRawData());
+		mHybridShader.setUniformFloat3("material.diffuse", sphere.mat.diffuse);
+		mHybridShader.setUniformFloat3("material.specular", sphere.mat.specular);
+		mHybridShader.setUniformFloat("material.a", sphere.mat.specularExponent);
+
+		mMesh->Render();
+
+		mModelMatrix = math::Mat4::identity();
+		mHybridShader.setUniformMat4("model", mModelMatrix.getRawData());
+	}
+
+	glDepthFunc(GL_LEQUAL);
+	mSkybox.Render(*mCamera, mEnvMapToggle);
+	glDepthFunc(GL_LESS);
 }
 
 bool Viewer::trySphereAdd(const math::Vec4& sphere)

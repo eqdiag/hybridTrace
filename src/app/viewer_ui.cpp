@@ -84,11 +84,15 @@ void ViewerUi::update()
                 if (ImGui::SliderInt("Num Bounces", &mViewer.mNumRayBounces, 0, 10)) {
                     mViewer.mRayTraceShader.use();
                     mViewer.mRayTraceShader.setUniformInt("numBounces", mViewer.mNumRayBounces);
+                    mViewer.mHybridShader.use();
+                    mViewer.mHybridShader.setUniformInt("numBounces", mViewer.mNumRayBounces);
                 }
             }
             if (ImGui::SliderInt("Num Spheres", &mViewer.mNumSpheresDisplayed, 1, mViewer.MAX_NUM_SPHERES)) {
                 mViewer.mRayTraceShader.use();
                 mViewer.mRayTraceShader.setUniformInt("numSpheresDisplayed", mViewer.mNumSpheresDisplayed);
+                mViewer.mHybridShader.use();
+                mViewer.mHybridShader.setUniformInt("numSpheresDisplayed", mViewer.mNumSpheresDisplayed);
             }
 
         }

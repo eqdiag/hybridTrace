@@ -1,5 +1,8 @@
 #version 330 core
 
+#define MAX_DIST 100000000
+#define MAX_NUM_SPHERES 100
+
 in vec3 Position;
 in vec3 Normal;
 
@@ -16,33 +19,158 @@ struct PointLight{
 	vec3 intensity;
 };
 
-uniform vec3 eye;
-uniform Material material;
+struct Sphere{
+	vec3 center;
+	float radius;
+	Material material;
+};
+
+
+struct Ray{
+	vec3 point;
+	vec3 dir;
+};
+
+struct Hit{
+	vec3 point;
+	vec3 normal;
+	vec3 incoming;
+	float t;
+	Material mat;
+};
+
+//Light params
 uniform PointLight light;
 uniform samplerCube skybox;
 uniform bool skyboxToggle;
 
+//Camera params
+uniform mat4 proj;
+uniform mat4 view;
+uniform vec3 eye;
+
+//Geometry params
+uniform int numSpheresDisplayed;
+uniform int numBounces;
+uniform Sphere spheres[MAX_NUM_SPHERES];
+
+bool getSphereHit(Ray ray,Sphere sphere,out Hit hit){
+	vec3 v = normalize(ray.dir);
+	vec3 dx = ray.point - sphere.center;
+	float B = 2.0*dot(dx,v);
+	float C = dot(dx,dx) - sphere.radius*sphere.radius;
+	float discrim = B*B - 4.0*C;
+	if(discrim < 0) return false;
+	float t = (-B - sqrt(discrim))*0.5;
+	if(t > 0){
+		hit.point = ray.point + t*v;
+		hit.normal = normalize(hit.point - sphere.center);
+		hit.t = t;
+		hit.incoming = v;
+		hit.mat = sphere.material;
+		return true;
+	}
+	t = (-B + sqrt(discrim))*0.5;
+	if(t > 0){
+		hit.point = ray.point + t*v;
+		hit.normal = normalize(hit.point - sphere.center);
+		hit.t = t;
+		hit.incoming = v;
+		hit.mat = sphere.material;
+		return true;
+	}
+	return false;
+}
+
+//Assumes all t > 0 returned from objects in world
+bool getClosestHit(Ray ray,out Hit closestHit){
+
+	bool hitFound = false;
+	closestHit.t = MAX_DIST;
+
+	for(int i = 0;i < numSpheresDisplayed;i++){
+		Hit hit;
+		if(getSphereHit(ray,spheres[i],hit)){
+			if(hit.t < closestHit.t){
+				closestHit = hit;
+				hitFound = true;
+			}
+		}
+	}
+	return hitFound;
+}
+
+vec3 Shade(Hit hit){
+	vec3 eyeDir = normalize(hit.point - eye);
+	vec3 reflectDir = reflect(eyeDir,hit.normal);
+
+	vec3 lightDir = normalize(light.position - hit.point);
+	vec3 viewVec = normalize(eye - hit.point);
+	vec3 halfVec = normalize(viewVec + lightDir);
+
+	float diffuseAmt = max(0.0,dot(hit.normal,lightDir));
+
+	Ray shadowRay = Ray(hit.point + 0.01*lightDir,lightDir);
+
+	Hit temp;
+
+	//Not in shadow
+	if(!getClosestHit(shadowRay,temp)){
+		return light.intensity*hit.mat.diffuse*diffuseAmt;
+	}else{ //In shadow
+		return vec3(0.0);
+	}
+}
+
+vec3 trace(Ray eyeRay){
+
+
+	Hit hit;
+	if(getClosestHit(eyeRay,hit)){
+		vec3 color = Shade(hit);
+
+		Ray bounceRay;
+		vec3 spec = hit.mat.specular;
+
+		//For multiple bounces
+		for(int i = 0;i< numBounces;i++){
+
+			//Create reflected ray
+			vec3 reflectDir = reflect(hit.incoming,hit.normal);
+			bounceRay = Ray(hit.point + 0.05*reflectDir,reflectDir);
+
+			spec = hit.mat.specular;
+			//Shoot into scene
+			if(getClosestHit(bounceRay,hit)){
+				spec = hit.mat.specular;
+				float power = i;
+				color += Shade(hit) * vec3(pow(spec.x,power),pow(spec.y,power),pow(spec.z,power));
+			}else{
+				float power = i;
+
+				if(skyboxToggle){
+					color += texture(skybox, bounceRay.dir).rgb * vec3(pow(spec.x,power),pow(spec.y,power),pow(spec.z,power));
+				}
+			}
+		}
+		return color;
+	}else{
+		if(skyboxToggle){
+			return texture(skybox, eyeRay.dir).rgb;
+		}else{
+			return vec3(0);
+		}
+	}
+}
 
 void main()
 {
-	vec3 eyeDir = normalize(Position - eye);
-	vec3 reflectDir = reflect(eyeDir,Normal);
+	vec3 v = Position - eye;
 
+	Ray eyeRay = Ray(eye,v);
 
-	vec3 lightDir = normalize(light.position - Position.xyz);
-	vec3 viewVec = normalize(eye - Position);
-	vec3 halfVec = normalize(viewVec + lightDir);
+	vec3 color = trace(eyeRay);
 
-	float diffuseAmt = max(0.0,dot(Normal,lightDir));
-	float specAmt = max(0.0,pow(dot(Normal,halfVec),material.a));
-	
-	vec3 color;
-
-	if(skyboxToggle){
-		color = light.intensity*(texture(skybox, reflectDir).xyz + material.diffuse*diffuseAmt + specAmt*material.specular);
-	}else{
-		color = light.intensity*(material.diffuse*diffuseAmt + specAmt*material.specular);
-	}
 	outColor = vec4(color,1.0);
-
+	
 }

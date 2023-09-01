@@ -48,6 +48,7 @@ public:
 
 	//Shader uniforms
 	core::Shader mRayTraceShader{};
+	core::Shader mHybridShader{};
 
 	math::Mat4 mModelMatrix{};
 	math::Mat4 mViewMatrix{};
@@ -69,7 +70,6 @@ private:
 
 
 	core::Shader mSphereShader{};
-	core::Shader mHybridShader{};
 	Skybox mSkybox{};
 
 	GLuint mRayTraceVAO;
