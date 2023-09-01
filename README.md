@@ -21,6 +21,14 @@ cmake ..
 make
 ```
 
+
+## Keyboard Controls
+  * `ESC` Exit program
+
+## Mouse Controls
+  * `mouseDrag` Rotates camera
+  * `mouseScroll` Zoom camera in/out
+
 ## Modes
   *  `Rasterize Mode` Renders reflective spheres as triangle meshes. Colors of meshes are sampled from the environment map.
   *  `Ray Trace Mode`  Renders reflective spheres using exact implicit formulation. Ray traced primary and secondary visibility.
@@ -34,13 +42,6 @@ make
 ![Ray Trace Mode](/screenshots/trace_mode.PNG "Ray Trace Mode Example")
 ## Hybrid Mode
 ![Hybrid Mode](screenshots/hybrid_mode.PNG "Hybrid Mode Example")
-
-## Keyboard Controls
-  * `ESC` Exit program
-
-## Mouse Controls
-  * `mouseDrag` Rotates camera
-  * `mouseScroll` Zoom camera in/out
 
 ## Potential Future Additions
   * Loading in custom skyboxes
