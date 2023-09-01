@@ -22,9 +22,9 @@ make
 ```
 
 ## Modes
-  *  `Rasterize Mode` = Renders reflective spheres as triangle meshes. Colors of meshes are sampled from the environment map.
-  *  `Ray Trace Mode` = Renders reflective spheres using exact implicit formulation. Ray traced primary and secondary visibility.
-  *  `Hybrid Mode` = Reflective spheres are triangle meshes. Primary visibility is handled via rasterization, lighting is handled via ray tracing.
+  *  `Rasterize Mode` Renders reflective spheres as triangle meshes. Colors of meshes are sampled from the environment map.
+  *  `Ray Trace Mode`  Renders reflective spheres using exact implicit formulation. Ray traced primary and secondary visibility.
+  *  `Hybrid Mode`  Reflective spheres are triangle meshes. Primary visibility is handled via rasterization, lighting is handled via ray tracing.
 
 
 ## Screenshots
