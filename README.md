@@ -31,7 +31,7 @@ make
 
 ![Rasterization Mode](/screenshots/raster_mode.PNG "Rasterization Mode Example")
 ![Ray Trace Mode](/screenshots/trace_mode.PNG "Ray Trace Mode Example")
-![Hybrid Mode](screenshots/hybrid_mode.png "Hybrid Mode Example")
+![Hybrid Mode](screenshots/hybrid_mode.PNG "Hybrid Mode Example")
 
 ## Keyboard Controls
   * `ESC` Exit program
