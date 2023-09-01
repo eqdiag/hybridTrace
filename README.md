@@ -29,7 +29,7 @@ make
 
 ## Screenshots
 
-![alt text](https://github.com/eqdiag/hybridTrace/blob/main/screenshots/raster_mode.PNG "Rasterization Mode Example")
+![alt text](/screenshots/raster_mode.PNG "Rasterization Mode Example")
 ![alt text](https://github.com/eqdiag/hybridTrace/blob/main/screenshots/trace_mode.PNG "Ray Trace Mode Example")
 ![alt text](screenshots/hybrid_mode.png "Hybrid Mode Example")
 
