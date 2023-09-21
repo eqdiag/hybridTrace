@@ -36,6 +36,8 @@ make
 
 
 # Screenshots
+## Live Demo
+![Live Demo](/screenshots/demo.gif "Live Demo Example")
 ## Rasterization Mode
 ![Rasterization Mode](/screenshots/raster_mode.PNG "Rasterization Mode Example")
 ## Ray Trace Mode
